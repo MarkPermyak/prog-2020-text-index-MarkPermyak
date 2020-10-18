@@ -3,7 +3,6 @@ total = list()
 
 current_page = 1
 page_line = 1
-current_line = 1
 number_of_word = 0
 with open('../data/search_words.txt', 'r', encoding='utf-8') as file:
     for line in file.readlines():
@@ -11,45 +10,48 @@ with open('../data/search_words.txt', 'r', encoding='utf-8') as file:
         # решить вопрос с лес и лестница
         total.append(0)
 
+result_file = open('../src/result.txt', 'w', encoding='utf-8')
 
-def find_a_word(word_to_find, initial_file):
-    global current_page
-    global page_line
-    global current_line
-    global number_of_word
-    for line in file.readlines():
-        if line.find(word_to_find) != -1:
-            print(current_page)
-            print(line)
-            total[number_of_word] += 1
-        page_line += 1
-        if page_line == 46:
-            current_page += 1
-            page_line = 1
-    current_page = current_line = page_line = 1
+
+def find_a_word(word_to_find, initial_file, with_pages, with_lines):
+    current_page0 = 1
+    page_line0 = 1
+    number_of_word0 = 0
+    for line0 in initial_file.readlines():
+        if line0.find(word_to_find) != -1:
+            if with_pages == 1:
+                result_file.write(str(current_page0))
+                result_file.write('\n')
+            if with_lines == 1:
+                result_file.write(line0)
+                result_file.write('\n')
+            total[number_of_word0] += 1
+        page_line0 += 1
+        if page_line0 == 46:
+            current_page0 += 1
+            page_line0 = 1
     initial_file.seek(0)
-    number_of_word += 1
+    number_of_word0 += 1
 
 
-with open('../data/Childhood.txt', 'r', encoding='utf-8') as file:
-    for search_word in list_of_words:
-        print("Word "+"'"+search_word+"'"+":")
-        find_a_word(search_word, file)
+def text_index():
+    with open('../data/Childhood.txt', 'r', encoding='utf-8') as file0:
+        for search_word in list_of_words:
+            result_file.write("Word "+"'"+search_word+"'"+":"+'\n')
+            find_a_word(search_word, file0, 1, 0)
+            result_file.write('\n')
 
 
-totals_and_words = dict()
-for j in range(len(total)):
-    totals_and_words[total[j]] = list_of_words[j]
+def print_lines():
+    with open('../data/Childhood.txt', 'r', encoding='utf-8') as file0:
+        for search_word in list_of_words:
+            result_file.write("Word "+"'"+search_word+"'"+":"+'\n')
+            find_a_word(search_word, file0, 0, 1)
+            result_file.write('\n')
 
 
-total.sort()
-total.reverse()
+text_index()
+print_lines()
 
-for i in range(len(total)):
-    if total[i] == 0:
-        print("There is no word", "'" + totals_and_words[i] + "'", "in the text")
-    else:
-        if total[i] == 1:
-            print("There is", total[i], "word", "'" + totals_and_words[total[i]] + "'", "in the text")
-        else:
-            print("There are", total[i], "words", "'" + totals_and_words[total[i]] + "'", "in the text")
+
+result_file.close()
